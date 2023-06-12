@@ -15,9 +15,7 @@ Seid mal still und hör gut zu!'''
 
 EXAMPLE_TASK = \
 '''Your task is to generate a short summary of the content in 1 sentence. Then come up with a descriptive headline. \
-The headline has to be less than 30 characters in length. 
-
-Structure your output like the following example.
+The headline has to be less than 30 characters in length. Structure your output like the following example.
 
 Summary: <your summary goes here>
 
