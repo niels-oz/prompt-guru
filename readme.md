@@ -2,6 +2,10 @@
 
 This is a Python application that allows you to craft your Chat GPT prompt.
 
+## Status
+
+Some features still work in progress.
+
 ## How it works
 
 The application provides you with a playground to query Chat GPT. It records all your prompts and settings. And allows
