@@ -35,6 +35,18 @@ def main():
 
     st.set_page_config(layout='wide')
     # st.markdown('<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;}</style>', unsafe_allow_html=True)
+    st.markdown(
+        """
+    <style>
+    button {
+        height: auto;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
 
     st.title('Prompt Guru')
     st.subheader('A tool to iteratively improve your ChatGPT prompt 💬')
@@ -59,7 +71,7 @@ def main():
         cur_position = len(session) - 1  # mockup implementation turn into class eventually
         col1.write(response)
 
-    button_back = subcol21.button('←', disabled = True if cur_position < 1 else False, help='previous prompt')
+    button_back = subcol21.button('◀', disabled = True if cur_position < 1 else False, help='previous prompt')
 
     # if col2.button('←'):
     #     cur_position -= 1
@@ -87,9 +99,9 @@ def main():
         help='download prompt'
     )
 
-    button_next = subcol23.button('→', disabled=True if cur_position == len(session) - 1 else False, help='next prompt')
+    button_next = subcol23.button('▶', disabled=True if cur_position == len(session) - 1 else False, help='next prompt')  # ➔
 
-    with col2.expander('Prompt upload'):
+    with subcol24.expander('Prompt upload'):
         pg_prompt = st.file_uploader(label='', type="application/json")
 
     with col2.expander('Advanced settings'):
