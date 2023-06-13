@@ -4,7 +4,7 @@ This is a Python application that allows you to craft your Chat GPT prompt.
 
 ## Status
 
-Some features still work in progress.
+save session and load session not yet implemented.
 
 ## How it works
 
