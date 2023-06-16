@@ -47,10 +47,11 @@ st.markdown('<style>button {height: auto;padding-top: 10px !important;padding-bo
 st.title('Prompt Guru')
 st.subheader('A tool to iteratively improve your ChatGPT prompt 💬')
 
-col1, col2 = st.columns([2, 1])
-col21, col22 = col2.columns([1, 8])
+col1, col2 = st.columns([5, 3])
+# col21, col22 = col2.columns([1, 8])
+col21, col22, col23, col24 = col2.columns([1, 1, 1, 7])
 
-with col22.expander('Prompt upload'):
+with col24.expander('Prompt upload'):
     pg_prompt = st.file_uploader(label='', type="application/json")
     # parse the file and load session
 
@@ -72,9 +73,9 @@ if col1.button('Process'):
     cur_position = len(session) - 1  # mockup implementation turn into class eventually
     col1.write(response)
 
-# if col21.button('◀', disabled=True if cur_position < 1 else False, help='previous prompt'):
-#     cur_position -= 1
-#     load_session(session[cur_position])
+if col21.button('◀', disabled=True if cur_position < 1 else False, help='previous prompt'):
+    cur_position -= 1
+    load_session(session[cur_position])
 
 if cur_position >= 0:
     json_string = json.dumps(session[cur_position])
@@ -83,7 +84,7 @@ else:
     json_string = '{}'
     timestamp = ''
 
-button_download = col21.download_button(
+button_download = col22.download_button(
     label='💾',
     disabled=True if cur_position < 0 else False,
     file_name=f'prompt_guru_{timestamp}.json',
@@ -92,7 +93,7 @@ button_download = col21.download_button(
     help='download prompt'
 )
 
-# if col23.button('▶', disabled=True if cur_position == len(session) - 1 else False, help='next prompt'):
-#     cur_position += 1
-#     load_session(session[cur_position])
+if col23.button('▶', disabled=True if cur_position == len(session) - 1 else False, help='next prompt'):
+    cur_position += 1
+    load_session(session[cur_position])
 
