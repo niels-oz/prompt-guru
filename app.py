@@ -30,14 +30,17 @@ def load_session(session):
     pass
 
 
-_ = load_dotenv()  # sets env vars as defined in .env
+# sets env vars as defined in .env
+_ = load_dotenv()
 openai.api_key = os.environ['OPENAI_API_KEY']
 
-if 'session' not in globals():
-    session = []
+# Initializing session state variables
+if 'prompts' not in st.session_state:  # prompts are a list of dict containing content, prompt, and settings
+    st.session_state['prompts'] = []  # initialise list of prompts of current session
 
-if 'cur_position' not in globals():
-    cur_position = -1
+if 'cur_position' not in st.session_state:
+    st.session_state['cur_position'] = -1  # a pointer to mark the current prompt
+
 
 st.set_page_config(layout='wide')
 # st.markdown('<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;}</style>', unsafe_allow_html=True)
@@ -48,11 +51,10 @@ st.title('Prompt Guru')
 st.subheader('A tool to iteratively improve your ChatGPT prompt 💬')
 
 col1, col2 = st.columns([5, 3])
-# col21, col22 = col2.columns([1, 8])
 col21, col22, col23, col24 = col2.columns([1, 1, 1, 7])
 
 with col24.expander('Prompt upload'):
-    pg_prompt = st.file_uploader(label='', type="application/json")
+    pg_prompt = st.file_uploader(label='Prompt upload', label_visibility=False, type="application/json")
     # parse the file and load session
 
 with col2.expander('Advanced settings'):
@@ -69,31 +71,33 @@ if col1.button('Process'):
                                            max_tokens=1600, top_p=1.0, stop=None, temperature=temperature,
                                            frequency_penalty=frequency_penalty, presence_penalty=presence_penalty)
 
-    session.append(cur_request)
-    cur_position = len(session) - 1  # mockup implementation turn into class eventually
+    st.session_state['prompts'].append(cur_request)  # 1st iteration turn into class eventually
+    st.session_state['cur_position'] = len(st.session_state['prompts']) - 1  # push the val to local var
     col1.write(response)
 
-if col21.button('◀', disabled=True if cur_position < 1 else False, help='previous prompt'):
-    cur_position -= 1
-    load_session(session[cur_position])
+if col21.button('◀', disabled=True if st.session_state['cur_position'] < 1 else False, help='previous prompt'):
+    st.session_state['cur_position'] -= 1
+    load_session(st.session_state['prompts'][st.session_state['cur_position']])
 
-if cur_position >= 0:
-    json_string = json.dumps(session[cur_position])
-    timestamp = datetime.fromtimestamp(session[cur_position]['response']['created']).strftime('%Y%m%dT%H%M%S')
+if st.session_state['cur_position'] >= 0:
+    json_string = json.dumps(st.session_state['prompts'][st.session_state['cur_position']])
+    timestamp = datetime.fromtimestamp(st.session_state['prompts'][st.session_state['cur_position']]\
+        ['response']['created']).strftime('%Y%m%dT%H%M%S')
 else:
     json_string = '{}'
     timestamp = ''
 
 button_download = col22.download_button(
     label='💾',
-    disabled=True if cur_position < 0 else False,
+    disabled=True if st.session_state['cur_position'] < 0 else False,
     file_name=f'prompt_guru_{timestamp}.json',
     mime="application/json",
     data=json_string,
     help='download prompt'
 )
 
-if col23.button('▶', disabled=True if cur_position == len(session) - 1 else False, help='next prompt'):
-    cur_position += 1
-    load_session(session[cur_position])
+if col23.button('▶', disabled=True if st.session_state['cur_position'] == len(st.session_state['prompts']) - 1 \
+        else False, help='next prompt'):
+    st.session_state['cur_position'] += 1
+    load_session(st.session_state['prompts'][st.session_state['cur_position']])
 
