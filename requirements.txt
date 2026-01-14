@@ -1,5 +1,5 @@
 python-dotenv==1.0.0
 altair==4.2.2
-streamlit==1.18.1
+streamlit==1.37.0
 # st-star-rating==0.0.3
 openai==0.27.7
